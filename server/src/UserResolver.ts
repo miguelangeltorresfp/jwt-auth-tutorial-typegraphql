@@ -13,6 +13,7 @@ import { hash, compare } from 'bcryptjs';
 import { MyContext } from './MyContext';
 import { createAccessToken, createRefreshToken } from './auth';
 import { isAuth } from './isAuth';
+import { sendRefreshToken } from './sendRefreshToken';
 
 @ObjectType()
 class LoginResponse {
@@ -78,8 +79,8 @@ export class UserResolver {
       throw new Error('Bad password');
     }
 
-    // Login successful
-    res.cookie('jid', createRefreshToken(user), { httpOnly: true });
+    // Login successful - create and send a refresh token
+    sendRefreshToken(res, createRefreshToken(user));
 
     return {
       accessToken: createAccessToken(user),
